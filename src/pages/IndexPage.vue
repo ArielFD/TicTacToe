@@ -6,16 +6,19 @@
           <h3>Tic Tac Toe</h3>
         </div>
         <div>
-          <q-btn class="btn-player  q-ma-xl" :label="data.scorePlayer1" />
-          <q-btn class="btn-player  q-ma-xl" :label="data.scorePlayer2" />
+          <q-btn class="btn-player q-ma-md" :label="data.scorePlayer1" />
+          <q-btn class="btn-player q-ma-md" :label="data.scorePlayer2" />
         </div>
         <div class="header row justify-center" v-if="data.winner">
           <b>Ha ganado {{ data.winner }} !!!</b>
         </div>
+        <div class="header row justify-center" v-if="data.draw">
+          <b>{{ data.draw }} !!!</b>
+        </div>
       </div>
     </div>
     <div class="body row justify-center">
-      <div class="container" v-if="!data.winner">
+      <div class="container" v-if="!data.winner && !data.draw">
         <div class="box" v-for="(item, index) in data.board" :key="index">
           <q-btn
             class="btn"
@@ -27,15 +30,25 @@
       </div>
     </div>
     <div class="row justify-center">
-      <q-btn class="btn-reset  q-ma-xl" label="Reset Game" @click="resetBoard" v-if="!data.winner"/>
-      <q-btn class="btn-reset  q-ma-xl" label="rematch!!!" @click="rematch" v-else/>
+      <q-btn
+        class="btn-reset q-ma-xl"
+        label="Reset Game"
+        @click="resetBoard"
+        v-if="!data.winner && !data.draw"
+      />
+      <q-btn
+        class="btn-reset q-ma-xl"
+        label="rematch!!!"
+        @click="rematch"
+        v-else
+      />
     </div>
   </q-page>
 </template>
 
 <script setup>
 import { reactive, onMounted } from "vue";
-import confetti from "canvas-confetti"
+import confetti from "canvas-confetti";
 
 const player = ["❌", "⚪"];
 const combinations = [
@@ -69,7 +82,7 @@ let data = reactive({
   scorePlayer2: "",
   score1: 0,
   score2: 0,
-  winner:null
+  winner: null,draw:null
 });
 
 function updateArray(index) {
@@ -94,25 +107,32 @@ function checkWinner(player, winner) {
     let isFounded = combinations[index].every((comb) => player.includes(comb));
     if (isFounded) updateScore(winner);
   }
+
+  if((data.player1.length==5 || data.player2.length==5) && !data.winner) data.draw="Draw"
 }
 
 function updateScore(winner) {
-  if (winner === "Player 1") data.score1++, data.winner="Player 1",confetti();
-  if (winner === "Player 2") data.score2++, data.winner="Player 2",confetti();
+  if (winner === "Player 1")
+    data.score1++, (data.winner = "Player 1"), confetti();
+  if (winner === "Player 2")
+    data.score2++, (data.winner = "Player 2"), confetti();
+
   const text1 = "Player 1 ❌:";
   data.scorePlayer1 = text1.concat(data.score1);
 
   const text2 = "Player 2 ⚪:";
   data.scorePlayer2 = text2.concat(data.score2);
+
 }
 
 function resetBoard() {
-  data.turn=0
-  data.player1= [],
-  data.player2= [],
-  data.score1=0,data.score2=0
-  updateScore("")
-  data.board= [
+  data.turn = 0;
+  (data.player1 = []),
+    (data.player2 = []),
+    (data.score1 = 0),
+    (data.score2 = 0);
+  updateScore("");
+  data.board = [
     { value: null, state: "unable" },
     { value: null, state: "unable" },
     { value: null, state: "unable" },
@@ -122,12 +142,13 @@ function resetBoard() {
     { value: null, state: "unable" },
     { value: null, state: "unable" },
     { value: null, state: "unable" },
-  ]
+  ];
 }
 
 function rematch() {
-  data.winner=null
-  data.board= [
+  data.winner = null;
+  data.draw=null
+  data.board = [
     { value: null, state: "unable" },
     { value: null, state: "unable" },
     { value: null, state: "unable" },
@@ -137,13 +158,12 @@ function rematch() {
     { value: null, state: "unable" },
     { value: null, state: "unable" },
     { value: null, state: "unable" },
-  ]
-  data.player1= [],
-  data.player2= []
+  ];
+  (data.player1 = []), (data.player2 = []);
 }
 
 onMounted(() => {
-  updateScore("")
+  updateScore("");
 });
 
 </script>
@@ -154,12 +174,12 @@ onMounted(() => {
 }
 
 .container {
-  width: 500px;
-  height: 500px;
+  width: 300px;
+  height: 300px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  font-size: 100px;
+  font-size: 60px;
   text-align: center;
   padding: 0%;
   justify-content: center;
@@ -170,8 +190,31 @@ onMounted(() => {
   border-radius: 10px;
   display: grid;
   text-align: center;
-  height: 160px;
-  width: 160px;
+  height: 96px;
+  width: 96px;
+}
+
+@media (min-width: 700px) {
+  .container {
+    width: 500px;
+    height: 500px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    font-size: 100px;
+    text-align: center;
+    padding: 0%;
+    justify-content: center;
+  }
+
+  .box {
+    background-color: transparent;
+    border-radius: 10px;
+    display: grid;
+    text-align: center;
+    height: 160px;
+    width: 160px;
+  }
 }
 
 .btn {
@@ -182,11 +225,11 @@ onMounted(() => {
   margin: auto;
 }
 
-.btn-player{
+.btn-player {
   background-color: rgb(31, 179, 179);
 }
 
-.btn-reset{
+.btn-reset {
   background-color: rgb(204, 72, 72);
 }
 
