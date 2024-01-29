@@ -1,8 +1,8 @@
 {
   "name": "quasar-project",
   "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Quasar App",
+  "description": "Tic Tac Toe application",
+  "productName": "Tic Tac Toe",
   "author": "arielferrera1992@gmail.com <arielferrera1992@gmail.com>",
   "private": true,
   "scripts": {
