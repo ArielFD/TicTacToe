@@ -3,7 +3,7 @@
     <div class="header row justify-center">
       <div>
         <div class="header row justify-center">
-          <h3>Tic Tac Toe.</h3>
+          <h3>Tic Tac Toe</h3>
         </div>
         <div>
           <q-btn class="btn-player q-ma-md" :label="data.scorePlayer1" />
